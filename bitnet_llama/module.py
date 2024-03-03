@@ -59,7 +59,7 @@ class BitLinear(nn.Linear):
 
     def ste_binarize(self, x):
         # Apply the round-clip function for binarization
-        binarized_x = torch.max(-1, torch.min(1, torch.round(binarized_x)))
+        binarized_x = torch.max(-1, torch.min(1, torch.round(x)))
         # Use STE: during backward pass, we bypass the binarization
         binarized_x = (binarized_x - x).detach() + x
         return binarized_x
