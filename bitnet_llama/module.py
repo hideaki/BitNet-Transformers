@@ -58,8 +58,8 @@ class BitLinear(nn.Linear):
         self.eps = 1e-5
 
     def ste_binarize(self, x):
-        # Apply the sign function for binarization
-        binarized_x = torch.sign(x)
+        # Apply the round-clip function for binarization
+        binarized_x = torch.max(torch.tensor(-1), torch.min(torch.tensor(1), torch.round(x)))
         # Use STE: during backward pass, we bypass the binarization
         binarized_x = (binarized_x - x).detach() + x
         return binarized_x
@@ -75,9 +75,9 @@ class BitLinear(nn.Linear):
             weight_group = self.weight[start_idx:end_idx]
 
             # Binarize each group using STE
-            alpha_g = weight_group.mean()
+            gamma_g = weight_group.abs().mean()
             binarized_weights[start_idx:end_idx] = self.ste_binarize(
-                weight_group - alpha_g
+                weight_group / (gamma_g + self.eps)
             )
 
         return binarized_weights

@@ -1,5 +1,5 @@
 export CUDA_VISIBLE_DEVICES=0
-export WANDB_PROJECT=bitllama-wikitext
+export WANDB_PROJECT=bitllama-b158-wikitext
 
 python run_clm.py \
 --dataset_name='wikitext' \
